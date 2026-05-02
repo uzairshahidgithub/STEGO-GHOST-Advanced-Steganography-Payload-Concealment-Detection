@@ -1,3 +1,9 @@
+<div align="center">
+  <img src="https://github.com/uzairshahidgithub/STEGO-GHOST-Advanced-Steganography-Payload-Concealment-Detection/blob/main/MITRE-Lab-Daigram.png?raw=true" 
+       alt="MITRE Lab Diagram" 
+       width="600"/>
+</div>
+
 ## Prerequisites
 
 Before starting this lab you must be comfortable with:
