@@ -8,13 +8,8 @@
 | **Difficulty** | Advanced |
 | **Category** | Steganography / OSINT / Forensics / Red & Blue |
 | **Duration** | 6–8 Hours (Single Day) |
-| **Platform Style** | TryHackMe / HTB Hybrid |
-| **Flag Format** | `CIPHER{...}` |
 | **Operating Systems** | Kali Linux 2024.x + Windows 10/11 VM |
 | **Environment** | Local VM or free-tier cloud (no paid tools) |
-| **Certification Alignment** | CEH, CPENT, CHFI, OSCP, CompTIA CySA+, PenTest+ |
-
----
 
 ## MITRE ATT&CK Mapping
 
@@ -25,8 +20,6 @@
 | Staging | TA0011 — Command & Control | T1105 — Ingress Tool Transfer | — |
 | Execution | TA0002 — Execution | T1059 — Command & Scripting Interpreter | T1059.004 — Unix Shell |
 | Exfiltration | TA0010 — Exfiltration | T1048 — Exfiltration Over Alternative Protocol | — |
-
----
 
 ## Prerequisites
 
@@ -39,8 +32,6 @@ Before starting this lab you must be comfortable with:
 - Completed at least one CTF on THM or HTB (Starting Point level minimum)
 
 If you cannot meet all prerequisites, complete **TryHackMe: CC: Pen Testing** and **Linux Fundamentals** paths first.
-
----
 
 ## Environment Setup
 
@@ -1210,11 +1201,3 @@ stegoveritas_install_deps && \
 wget -q https://github.com/zardus/ctf-tools/raw/master/stegsolve/install \
   -O /tmp/stegsolve_install.sh && bash /tmp/stegsolve_install.sh
 ```
-
----
-
-*CIPHER LAB — STEGO GHOST | Advanced Steganography, Payload Concealment & Detection*
-*Tested Version | Free Tools Only | Self-Hosted Environment*
-*MITRE ATT&CK: T1027.003 | T1105 | T1059.004 | T1566.001*
-
----
