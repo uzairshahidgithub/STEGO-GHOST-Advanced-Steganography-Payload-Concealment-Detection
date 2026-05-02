@@ -1,26 +1,3 @@
-# CIPHER LAB: STEGO GHOST: Advanced Steganography, Payload Concealment & Detection
-
-## Lab Metadata
-
-| Field | Detail |
-|---|---|
-| **Lab Name** | STEGO GHOST |
-| **Difficulty** | Advanced |
-| **Category** | Steganography / OSINT / Forensics / Red & Blue |
-| **Duration** | 6–8 Hours (Single Day) |
-| **Operating Systems** | Kali Linux 2024.x + Windows 10/11 VM |
-| **Environment** | Local VM or free-tier cloud (no paid tools) |
-
-## MITRE ATT&CK Mapping
-
-| Phase | Tactic | Technique | Sub-technique |
-|---|---|---|---|
-| Concealment | TA0005 — Defence Evasion | T1027 — Obfuscated Files or Information | T1027.003 — Steganography |
-| Delivery | TA0001 — Initial Access | T1566 — Phishing | T1566.001 — Spearphishing Attachment |
-| Staging | TA0011 — Command & Control | T1105 — Ingress Tool Transfer | — |
-| Execution | TA0002 — Execution | T1059 — Command & Scripting Interpreter | T1059.004 — Unix Shell |
-| Exfiltration | TA0010 — Exfiltration | T1048 — Exfiltration Over Alternative Protocol | — |
-
 ## Prerequisites
 
 Before starting this lab you must be comfortable with:
@@ -92,7 +69,6 @@ wget -O cover_photo.jpg "https://upload.wikimedia.org/wikipedia/commons/thumb/4/
 mkdir -p ~/stego_lab/{payloads,images,audio,output,forensics,flags}
 ```
 
----
 
 ## Tool–Format Compatibility Reference
 
@@ -112,7 +88,6 @@ mkdir -p ~/stego_lab/{payloads,images,audio,output,forensics,flags}
 | `strings` | Any binary | Human-readable string extraction |
 | `foremost` | Any binary/disk | File carving by header/footer |
 
----
 
 ## Phase 0 — TryHackMe Pre-Lab Rooms
 
@@ -130,7 +105,7 @@ Complete these rooms **in order** before the main lab tasks. Extract the specifi
 
 **Screenshot Required:** Terminal showing successful extraction with tool and filename visible.
 
----
+
 
 ### Room 2: Psychobreak
 **URL:** [https://tryhackme.com/room/psychobreak](https://tryhackme.com/room/psychobreak)
@@ -144,7 +119,7 @@ Complete these rooms **in order** before the main lab tasks. Extract the specifi
 
 **Screenshot Required:** CyberChef pipeline visible with encoded input and plaintext output.
 
----
+
 
 ### Room 3: Cicada 3301 Volume 1
 **URL:** [https://tryhackme.com/room/cicada3301vol1](https://tryhackme.com/room/cicada3301vol1)
@@ -158,7 +133,7 @@ Complete these rooms **in order** before the main lab tasks. Extract the specifi
 
 **Screenshot Required:** Full terminal session showing the multi-step extraction chain.
 
----
+
 
 ## Phase 1 — LSB Steganography Theory (Mandatory Read)
 
@@ -185,7 +160,7 @@ Audio steganography in WAV using phase encoding = hardest to detect.
 
 Know **why** the tool works, not just **that** it works.
 
----
+
 
 ## Phase 2 — Offensive Operations (Kali Linux)
 
@@ -222,7 +197,7 @@ cat stage2_encoded.b64
 
 > **Why Base64 first?** Attackers encode before embedding for two reasons: (1) binary data may corrupt some stego tool outputs, and (2) a defender extracting the stego container sees apparent garbage rather than a readable script — adding a second detection layer to bypass.
 
----
+
 
 ### Task 2.2 — Steghide: JPEG Concealment (Kali)
 
@@ -257,7 +232,7 @@ steghide info images/cover_stego.jpg -p "STEGO_GHOST_2024"
 
 > **Expected Output:** steghide should confirm embedded file name, size and encryption type. If it prompts for a passphrase and accepts it — embed was successful.
 
----
+
 
 ### Task 2.3 — Extraction Simulation (Victim Side)
 
@@ -422,7 +397,7 @@ outguess -k "outguess_secret_2024" \
 cat output/outguess_extracted.txt
 ```
 
----
+
 
 ## Phase 3 — Custom Secret Encoding Language (Python3)
 
@@ -441,7 +416,7 @@ CIPHER:    Q W E R T Y U I O P A S D F G H J K L Z X C V B N M
 
 Save this mapping as your **Lab Key** — you will need it for encoding and decoding.
 
----
+
 
 ### Task 3.2 — Encoder/Decoder Script
 
@@ -548,7 +523,7 @@ python3 ~/stego_lab/cipher_codec.py encode "CIPHER LAB IS ACTIVE"
 python3 ~/stego_lab/cipher_codec.py decode ">>CIPHERSTART<<PASTE_OUTPUT_HERE>>CIPHEREND<<"
 ```
 
----
+
 
 ### Task 3.3 — Stacked Concealment: Cipher + Steghide
 
@@ -588,7 +563,7 @@ python3 cipher_codec.py decode "$(cat output/layer1_extracted.txt)"
 
 > **Flag 3 location:** The decoded plaintext message contains the flag. Record: `CIPHER{dual_layer_attacker_exfil_route_decoded}`
 
----
+
 
 ### Task 3.4 — Whitespace Steganography with snow (Kali)
 
@@ -626,7 +601,7 @@ snow -C -p "snow_pass_2024" output/readme_stego.txt
 
 > **Flag 4 location:** snow extraction output. Record: `CIPHER{snow_whitespace_channel_active}`
 
----
+
 
 ## Phase 4 — Windows Steganography Tools
 
@@ -671,7 +646,6 @@ Complete these tasks on your Windows VM. Document each with a screenshot.
 
 > **Flag 6 location:** Extracted text file from DeepSound. Record: `CIPHER{deepsound_audio_covert_channel}`
 
----
 
 ### Task 4.3 — snow.exe: Whitespace Stego (Windows CMD)
 
@@ -694,7 +668,7 @@ snow.exe -C -p "snow_win_2024" output_snow.txt
 
 > **Flag 7 location:** snow.exe extraction output. Record: `CIPHER{snow_windows_whitespace}`
 
----
+
 
 ### Task 4.4 — HxD Hex Editor: Manual Inspection (Windows)
 
@@ -713,7 +687,6 @@ notepad strings_output.txt
 REM Look for: base64 strings, URLs, script fragments, readable sentences
 ```
 
----
 
 ## Phase 5 — Defensive Detection & Forensic Analysis
 
@@ -744,7 +717,7 @@ diff /tmp/meta_clean.txt /tmp/meta_stego.txt
 3. Is the `Software` field consistent with the camera/creator claimed?
 4. Does the `ColorSpace` match expected values for the stated format?
 
----
+
 
 ### Task 5.2 — Entropy Analysis with binwalk
 
@@ -775,7 +748,7 @@ ls -la forensics/binwalk_carved/
 | 0.8 – 0.95 | Compressed image (JPEG/PNG normal range) |
 | 0.95 – 1.0 | **Encrypted or heavily obfuscated — investigate** |
 
----
+
 
 ### Task 5.3 — String Analysis
 
@@ -802,7 +775,7 @@ echo "=== HUNTING FOR CIPHER MARKERS ==="
 strings images/cover_stego.jpg | grep -E '(CIPHERSTART|CIPHEREND|FLAG|CIPHER\{)'
 ```
 
----
+
 
 ### Task 5.4 — stegsolve Bit-Plane Analysis (Kali GUI)
 
@@ -821,7 +794,7 @@ java -jar /opt/stegsolve/stegsolve.jar
 
 **What you are looking for:** A consistent noise pattern in bit-plane 0 indicating non-random LSB data (steganographic signature).
 
----
+
 
 ### Task 5.5 — stegoVeritas Full Scan
 
@@ -864,7 +837,7 @@ tshark -r ~/stego_lab/forensics/delivery_capture.pcap \
 4. Any suspicious `User-Agent` string
 5. Timestamp of download
 
----
+
 
 ### Task 5.7 — YARA Detection Rule
 
@@ -965,7 +938,7 @@ yara ~/stego_lab/forensics/stego_detect.yar images/cover_clean.jpg
 
 > **Expected result:** Rule fires on `cover_stego.jpg`, silent on `cover_clean.jpg`
 
----
+
 
 ### Task 5.8 — Sigma Rule (SIEM Detection)
 
@@ -1028,13 +1001,13 @@ fields:
   - Hashes
 ```
 
----
+
 
 ## Phase 6 — Independent CTF Challenge (Timed — 90 Minutes)
 
 > **Rules:** No hints until time expires. No collaboration. Work independently. Submit all flags plus a 1-page analysis report.
 
----
+
 
 ### Challenge Setup
 
@@ -1075,7 +1048,7 @@ Answer all five questions in your incident report:
 4. Why does `steghide` use DCT-domain embedding in JPEG rather than spatial-domain LSB?
 5. Write one additional YARA rule not provided in this lab that detects a stego indicator of your choice. Justify the logic.
 
----
+
 
 ## Deliverables Checklist
 
