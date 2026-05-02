@@ -1,6 +1,4 @@
-# CIPHER LAB — STEGO GHOST: Advanced Steganography, Payload Concealment & Detection
-
----
+# CIPHER LAB: STEGO GHOST: Advanced Steganography, Payload Concealment & Detection
 
 ## Lab Metadata
 
